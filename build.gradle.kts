@@ -10,7 +10,7 @@ plugins {
 var modVersion = "6.0.1"
 
 group = "com.moulberry.axiom"
-version = "${modVersion}+26.2"
+version = "${modVersion}+26.2-folia"
 description = "Serverside component for Axiom on Paper"
 
 java {
