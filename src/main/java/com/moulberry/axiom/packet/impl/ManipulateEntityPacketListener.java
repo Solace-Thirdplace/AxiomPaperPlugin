@@ -186,7 +186,11 @@ public class ManipulateEntityPacketListener implements PacketHandler {
                         for (UUID passengerUuid : entry.passengers) {
                             Entity passenger = serverLevel.getEntity(passengerUuid);
 
-                            if (passenger == null || !FoliaSupport.isOwned(passenger.getBukkitEntity()) || passenger.isPassenger()) {
+                            if (passenger == null || passenger.isPassenger()) {
+                                continue;
+                            }
+                            if (!FoliaSupport.isOwned(passenger.getBukkitEntity())) {
+                                this.plugin.reportRejectedEdit(player, "an entity is in another Folia region than its vehicle, passengers can only be linked when both are close together");
                                 continue;
                             }
                             if (!canManipulatePassengers(passenger) || passenger.hasPassenger(ManipulateEntityPacketListener::cannotManipulatePassengers)) {
@@ -215,7 +219,11 @@ public class ManipulateEntityPacketListener implements PacketHandler {
                     case REMOVE_LIST -> {
                         for (UUID passengerUuid : entry.passengers) {
                             Entity passenger = serverLevel.getEntity(passengerUuid);
-                            if (passenger == null || passenger == entity || !FoliaSupport.isOwned(passenger.getBukkitEntity())) {
+                            if (passenger == null || passenger == entity) {
+                                continue;
+                            }
+                            if (!FoliaSupport.isOwned(passenger.getBukkitEntity())) {
+                                this.plugin.reportRejectedEdit(player, "an entity is in another Folia region than its vehicle, passengers can only be unlinked when both are close together");
                                 continue;
                             }
                             if (!canManipulatePassengers(passenger) || passenger.hasPassenger(ManipulateEntityPacketListener::cannotManipulatePassengers)) {

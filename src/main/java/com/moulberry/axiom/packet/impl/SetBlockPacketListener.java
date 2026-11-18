@@ -122,6 +122,10 @@ public class SetBlockPacketListener implements PacketHandler {
             if (blocks.isEmpty()) {
                 return;
             }
+            if (!FoliaSupport.isOwned(ownedLevel, blockHit.getBlockPos())) {
+                this.plugin.reportRejectedEdit(bukkitPlayer, "the clicked block is in another Folia region than you, single-block placement only works near you");
+                return;
+            }
         }
 
         BlockPlaceContext blockPlaceContext = new BlockPlaceContext(player, hand, player.getItemInHand(hand), blockHit);

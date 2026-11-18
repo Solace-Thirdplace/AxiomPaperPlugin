@@ -91,6 +91,7 @@ public class TickBlocksPacketListener implements PacketHandler {
         BlockPos.MutableBlockPos blockPos = new BlockPos.MutableBlockPos();
         long[] lastChunk = {Long.MIN_VALUE};
         boolean[] lastChunkOwned = {true};
+        int[] skippedOtherRegion = {0};
         TriIntConsumer consumer = (x, y, z) -> {
             if (FoliaSupport.FOLIA) {
                 long chunkKey = (((long) (x >> 4)) << 32) | ((z >> 4) & 0xFFFFFFFFL);
@@ -99,6 +100,7 @@ public class TickBlocksPacketListener implements PacketHandler {
                     lastChunkOwned[0] = FoliaSupport.isOwned(level, x >> 4, z >> 4);
                 }
                 if (!lastChunkOwned[0]) {
+                    skippedOtherRegion[0]++;
                     return;
                 }
             }
@@ -141,6 +143,10 @@ public class TickBlocksPacketListener implements PacketHandler {
                     }
                 }
             }
+        }
+
+        if (skippedOtherRegion[0] > 0) {
+            this.plugin.reportRejectedEdit(bukkitPlayer, skippedOtherRegion[0] + " block(s) are in another Folia region than you, tick-blocks only works near you");
         }
 
         long end = System.currentTimeMillis();
