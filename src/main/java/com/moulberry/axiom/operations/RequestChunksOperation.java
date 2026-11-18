@@ -116,7 +116,7 @@ public class RequestChunksOperation implements PendingOperation {
                 this.chunksInFlight.incrementAndGet();
 
                 if (this.noLoadChunks.contains(chunkPos)) {
-                    FoliaSupport.runAtChunk(level, x, z, () -> {
+                    FoliaSupport.scheduleAtChunk(level, x, z, () -> {
                         try {
                             LevelChunk chunk = level.getChunkIfLoaded(x, z);
                             if (chunk != null) {
@@ -138,7 +138,7 @@ public class RequestChunksOperation implements PendingOperation {
                             return;
                         }
 
-                        FoliaSupport.runAtChunk(level, x, z, () -> {
+                        FoliaSupport.scheduleAtChunk(level, x, z, () -> {
                             try {
                                 this.readChunk((LevelChunk) ((CraftChunk)bukkitChunk).getHandle(ChunkStatus.FULL));
                             } catch (Throwable t) {

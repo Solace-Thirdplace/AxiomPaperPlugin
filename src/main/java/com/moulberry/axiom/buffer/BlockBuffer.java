@@ -31,8 +31,8 @@ public class BlockBuffer {
 
     public static final BlockState EMPTY_STATE = Blocks.VOID_AIR.defaultBlockState();
 
-    private static final Map<BlockState, Codec<PalettedContainer<BlockState>>> BLOCK_STATE_CODECS = new HashMap<>();
-    private static final Map<BlockState, IdMap<BlockState>> ID_MAPPERS = new HashMap<>();
+    private static final Map<BlockState, Codec<PalettedContainer<BlockState>>> BLOCK_STATE_CODECS = new java.util.concurrent.ConcurrentHashMap<>();
+    private static final Map<BlockState, IdMap<BlockState>> ID_MAPPERS = new java.util.concurrent.ConcurrentHashMap<>();
 
     public static PalettedContainer<BlockState> createPalettedContainerForEmptyBlockState(BlockState emptyBlockState) {
         return VersionHelper.createPalettedContainer(BlockBuffer.getIdMapForEmptyBlockState(emptyBlockState), EMPTY_STATE);

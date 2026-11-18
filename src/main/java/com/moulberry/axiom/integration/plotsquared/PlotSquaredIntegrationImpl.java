@@ -124,7 +124,7 @@ public class PlotSquaredIntegrationImpl {
 
     private static final WeakHashMap<World, Boolean> plotWorldCache = new WeakHashMap<>();
 
-    static boolean isPlotWorld(World world) {
+    static synchronized boolean isPlotWorld(World world) {
         if (plotWorldCache.containsKey(world)) {
             return plotWorldCache.get(world);
         }

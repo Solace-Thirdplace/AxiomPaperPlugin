@@ -43,6 +43,19 @@ public final class FoliaSupport {
         }
     }
 
+    /**
+     * Like runAtChunk, but on Folia the task always goes through the region scheduler, even when the
+     * current thread owns the chunk. Used by queued operations so a large edit is spread over ticks
+     * and never runs while the operation queue's locks are held.
+     */
+    public static void scheduleAtChunk(ServerLevel level, int chunkX, int chunkZ, Runnable task) {
+        if (!FOLIA) {
+            task.run();
+        } else {
+            Bukkit.getRegionScheduler().execute(AxiomPaper.PLUGIN, level.getWorld(), chunkX, chunkZ, task);
+        }
+    }
+
     public static void runForEntity(Entity entity, Runnable task, @Nullable Runnable retired) {
         if (!FOLIA || Bukkit.isOwnedByCurrentRegion(entity)) {
             task.run();

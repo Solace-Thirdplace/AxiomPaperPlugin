@@ -122,7 +122,7 @@ public class SetBlockBufferOperation implements PendingOperation {
                 this.chunksInFlight.incrementAndGet();
 
                 if (!canLoad) {
-                    FoliaSupport.runAtChunk(level, x, z, () -> {
+                    FoliaSupport.scheduleAtChunk(level, x, z, () -> {
                         try {
                             LevelChunk chunk = level.getChunkIfLoaded(x, z);
                             if (chunk != null) {
@@ -148,7 +148,7 @@ public class SetBlockBufferOperation implements PendingOperation {
                             return;
                         }
 
-                        FoliaSupport.runAtChunk(level, x, z, () -> {
+                        FoliaSupport.scheduleAtChunk(level, x, z, () -> {
                             try {
                                 LevelChunk chunk = (LevelChunk) ((CraftChunk)bukkitChunk).getHandle(ChunkStatus.FULL);
                                 this.applyChunk(level, chunk, sections);

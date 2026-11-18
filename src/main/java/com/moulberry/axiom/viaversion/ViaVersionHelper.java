@@ -38,7 +38,7 @@ public class ViaVersionHelper {
     private static final Int2ObjectOpenHashMap<IdMapper<BlockState>> blockRegistryCache = new Int2ObjectOpenHashMap<>();
     private static final Int2ObjectOpenHashMap<String> blockRegistryErrorCache = new Int2ObjectOpenHashMap<>();
 
-    public static IdMapper<BlockState> getBlockRegistryForVersion(IdMapper<BlockState> mapper, int playerVersion) {
+    public static synchronized IdMapper<BlockState> getBlockRegistryForVersion(IdMapper<BlockState> mapper, int playerVersion) {
         if (blockRegistryErrorCache.containsKey(playerVersion)) {
             throw new RuntimeException(blockRegistryErrorCache.get(playerVersion));
         }

@@ -143,6 +143,7 @@ public class ManipulateEntityPacketListener implements PacketHandler {
 
             entity.setPosRaw(position.x, position.y, position.z);
 
+            Location crossRegionTeleport = null;
             Vec3 entryPos = entry.position();
             if (entryPos != null && entry.relativeMovementSet != null) {
                 double newX = entry.relativeMovementSet.contains(Relative.X) ? entity.position().x + entryPos.x : entryPos.x;
@@ -169,7 +170,7 @@ public class ManipulateEntityPacketListener implements PacketHandler {
                         entity.setYRot(newYaw);
                         entity.setXRot(newPitch);
                     } else if (FoliaSupport.FOLIA && !FoliaSupport.isOwned(serverLevel, containing)) {
-                        entity.getBukkitEntity().teleportAsync(new Location(world, newX, newY, newZ, newYaw, newPitch));
+                        crossRegionTeleport = new Location(world, newX, newY, newZ, newYaw, newPitch);
                     } else {
                         entity.snapTo(newX, newY, newZ, newYaw, newPitch);
                     }
@@ -244,6 +245,15 @@ public class ManipulateEntityPacketListener implements PacketHandler {
 
             AxiomAfterManipulateEntityEvent afterManipulateEvent = new AxiomAfterManipulateEntityEvent(player, entity.getBukkitEntity());
             afterManipulateEvent.callEvent();
+
+            // Moving into another Folia region hands the entity to that region, so it has to be the last thing done to it here
+            if (crossRegionTeleport != null) {
+                entity.getBukkitEntity().teleportAsync(crossRegionTeleport).thenAccept(success -> {
+                    if (!success) {
+                        this.plugin.reportRejectedEdit(player, "an entity could not be moved into another Folia region");
+                    }
+                });
+            }
         }
     }
 

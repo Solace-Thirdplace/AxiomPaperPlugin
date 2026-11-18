@@ -76,6 +76,7 @@ public class UploadBlueprintPacketListener implements PacketHandler {
         String pathName = pathStr.substring(0, pathStr.length()-3);
 
         FoliaSupport.runDeferred(serverPlayer.level().getServer(), () -> {
+            synchronized (UploadBlueprintPacketListener.class) {
             try {
                 Path path = this.plugin.blueprintFolder.resolve(relative);
 
@@ -99,6 +100,7 @@ public class UploadBlueprintPacketListener implements PacketHandler {
             } catch (Throwable t) {
                 serverPlayer.getBukkitEntity().kick(net.kyori.adventure.text.Component.text(
                         "An error occured while uploading blueprint: " + t.getMessage()));
+            }
             }
         });
     }
